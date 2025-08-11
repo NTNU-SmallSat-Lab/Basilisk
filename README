@@ -1,0 +1,141 @@
+🛰️ Satellite Simulation with Basilisk
+
+This project implements a satellite imaging simulation using the Basilisk framework. It features:
+
+    orbital and rotational dynamics,
+
+    a real-time control interface via ZMQ,
+
+    live 3D visualization with Vizard,
+
+    a configurable onboard camera pointing toward Earth (nadir).
+
+🎯 Purpose
+
+This script simulates a satellite in Earth orbit and allows real-time orientation control using external commands (via ZMQ). It integrates Basilisk’s modules for spacecraft dynamics, attitude, gravity, and visualization, making it useful for testing imaging concepts and satellite pointing mechanisms.
+⚙️ Key Features
+
+    Classical orbit initialization (COEs: altitude, inclination, etc.)
+
+    Orientation using Modified Rodrigues Parameters (MRPs)
+
+    Onboard camera with a wide field of view (120°)
+
+    Real-time ZMQ interface to command spacecraft attitude (roll/pitch/yaw)
+
+    Live visualization via Vizard
+
+    Plots of orbital inclination and position over time
+
+📦 Dependencies
+
+    Basilisk
+
+    numpy, matplotlib
+
+    tkinter (for the stop button GUI)
+
+    spiceypy
+
+    pyzmq
+
+    json
+
+🛰️ Simulation Overview
+
+    Basilisk Modules Used:
+
+        Dynamics: spacecraft, extForceTorque, simpleNav
+
+        Gravity: simIncludeGravBody, spiceInterface
+
+        Attitude: attTrackingError, mrpFeedback
+
+        Visualization: vizSupport, vizInterface, pinholeCamera
+
+    Real-time control:
+
+        Subscribes to ZMQ messages on port tcp://localhost:5559
+
+        Accepts attitude commands formatted as:
+
+        {
+          "type": "attitude_command",
+          "roll": 0,
+          "pitch": 0,
+          "yaw": 0
+        }
+
+🚀 How to Run
+1. Run the script
+
+python script.py
+
+This will:
+
+    Initialize the simulation with default orbit parameters
+
+    Launch a ZMQ listener for attitude commands
+
+    Open a Tkinter window with a red "Stop" button
+
+    Stream simulation data live to Vizard
+
+2. Default Orbit Parameters
+
+initialCoordinate(1500., 10.7579, 59.9115, 65., False)
+
+This corresponds to:
+
+    Altitude: 1500 km
+
+    Longitude: 10.76°
+
+    Latitude: 59.91°
+
+    True anomaly: 65°
+
+    Southward orbit
+
+You can change these values to simulate other orbits.
+📷 Camera Configuration
+
+    Points initially in the -Z direction (nadir)
+
+    FOV: 120°
+
+    Controlled by the spacecraft’s body frame
+
+    Adjusts dynamically via attitude commands
+
+🖥️ Stop Simulation GUI
+
+A simple Tkinter window appears with a “Stop” button to safely terminate the simulation.
+📊 Output
+
+Two key plots are generated:
+
+    Inertial Position of the spacecraft over time (in km)
+
+    Inclination evolution over time vs. initial inclination
+
+Plots appear at the end of the simulation if show_plots=True.
+📂 Files
+
+    simulationTools.py: Auxiliary math and orbital functions (required)
+
+    orientation.py: Includes process_command() for attitude handling (required)
+
+    LiveScenario.viz: Vizard visualization file name
+
+✅ Notes
+
+    The simulation runs one orbit period per loop iteration.
+
+    Real-time orientation control is handled via a ZMQ subscriber.
+
+    Basilisk uses SPICE data for precise ephemeris initialization.
+
+    The satellite's orientation is initialized to point toward Earth (nadir).
+
+    Orientation is internally represented using MRP (Modified Rodrigues Parameters).
